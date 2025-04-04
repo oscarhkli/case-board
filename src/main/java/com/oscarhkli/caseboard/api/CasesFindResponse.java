@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
 import java.util.List;
 import lombok.Builder;

@@ -1,6 +1,6 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
-import com.oscarhkli.caseboard.caseboard.entity.CaseEntity;
+import com.oscarhkli.caseboard.entity.CaseEntity;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import lombok.Builder;

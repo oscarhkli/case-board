@@ -1,9 +1,9 @@
-package com.oscarhkli.caseboard.caseboard.entity;
+package com.oscarhkli.caseboard.entity;
 
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.BDDAssertions.then;
 
-import com.oscarhkli.caseboard.caseboard.config.JpaConfiguration;
+import com.oscarhkli.caseboard.config.JpaConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

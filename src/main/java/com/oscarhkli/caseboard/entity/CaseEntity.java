@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard.entity;
+package com.oscarhkli.caseboard.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

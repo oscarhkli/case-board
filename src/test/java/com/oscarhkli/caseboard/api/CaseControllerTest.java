@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -12,8 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oscarhkli.caseboard.caseboard.CaseOperationException;
-import com.oscarhkli.caseboard.caseboard.CaseService;
+import com.oscarhkli.caseboard.CaseOperationException;
+import com.oscarhkli.caseboard.CaseService;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;

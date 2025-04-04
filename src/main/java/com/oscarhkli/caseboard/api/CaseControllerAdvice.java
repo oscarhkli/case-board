@@ -1,8 +1,8 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
-import com.oscarhkli.caseboard.caseboard.CaseOperationException;
-import com.oscarhkli.caseboard.caseboard.api.ApiErrorResponse.ApiError;
-import com.oscarhkli.caseboard.caseboard.api.ApiErrorResponse.ErrorDetails;
+import com.oscarhkli.caseboard.CaseOperationException;
+import com.oscarhkli.caseboard.api.ApiErrorResponse.ApiError;
+import com.oscarhkli.caseboard.api.ApiErrorResponse.ErrorDetails;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;

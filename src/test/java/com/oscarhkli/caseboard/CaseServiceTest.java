@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard;
+package com.oscarhkli.caseboard;
 
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -8,9 +8,9 @@ import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 
-import com.oscarhkli.caseboard.caseboard.api.Case;
-import com.oscarhkli.caseboard.caseboard.entity.CaseEntity;
-import com.oscarhkli.caseboard.caseboard.entity.CaseRepository;
+import com.oscarhkli.caseboard.api.Case;
+import com.oscarhkli.caseboard.entity.CaseEntity;
+import com.oscarhkli.caseboard.entity.CaseRepository;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;

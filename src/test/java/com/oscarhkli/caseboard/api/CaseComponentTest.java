@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oscarhkli.caseboard.caseboard.entity.CaseEntity;
-import com.oscarhkli.caseboard.caseboard.entity.CaseRepository;
+import com.oscarhkli.caseboard.entity.CaseEntity;
+import com.oscarhkli.caseboard.entity.CaseRepository;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;

@@ -1,7 +1,7 @@
-package com.oscarhkli.caseboard.caseboard;
+package com.oscarhkli.caseboard;
 
-import com.oscarhkli.caseboard.caseboard.api.Case;
-import com.oscarhkli.caseboard.caseboard.entity.CaseRepository;
+import com.oscarhkli.caseboard.api.Case;
+import com.oscarhkli.caseboard.entity.CaseRepository;
 
 import java.util.List;
 import java.util.Optional;

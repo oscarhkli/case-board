@@ -1,6 +1,6 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
-import com.oscarhkli.caseboard.caseboard.CaseService;
+import com.oscarhkli.caseboard.CaseService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

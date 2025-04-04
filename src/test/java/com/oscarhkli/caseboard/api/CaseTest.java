@@ -1,8 +1,8 @@
-package com.oscarhkli.caseboard.caseboard.api;
+package com.oscarhkli.caseboard.api;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-import com.oscarhkli.caseboard.caseboard.entity.CaseEntity;
+import com.oscarhkli.caseboard.entity.CaseEntity;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;

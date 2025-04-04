@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard;
+package com.oscarhkli.caseboard;
 
 public class CaseOperationException extends RuntimeException {
 

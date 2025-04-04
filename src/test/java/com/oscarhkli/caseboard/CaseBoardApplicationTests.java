@@ -1,4 +1,4 @@
-package com.oscarhkli.caseboard.caseboard;
+package com.oscarhkli.caseboard;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
