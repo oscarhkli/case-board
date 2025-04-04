@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: case-board
+  profiles:
+    active: test
+  datasource:
+    url: "jdbc:h2:mem:"
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  sql:
+    init:
+      schema-locations: classpath:sql/schema.sql
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 61001
+logging:
+  level:
+    org:
+      apache:
+        http: WARN
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace

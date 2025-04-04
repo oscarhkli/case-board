@@ -9,5 +9,4 @@ class CaseBoardApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

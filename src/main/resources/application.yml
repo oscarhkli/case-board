@@ -1,3 +1,40 @@
 spring:
   application:
-    name: CaseBoard
+    name: case-board
+
+#  jpa:
+#    database-platform: org.hibernate.community.dialect.SQLiteDialect
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#
+#  datasource:
+#    driver-class-name: org.sqlite.JDBC
+#    url: jdbc:sqlite:cases.db
+#    username: sa
+#    password: sa
+
+
+logging:
+  include-application-name: false
+  pattern:
+    correlation: ""
+    dateformat: "yyyy-MM-dd HH:mm:ss.SSS"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+
+server:
+  port: 61001
+
+---
+spring:
+  config:
+    activate:
+      on-profile: cloud
+
+server:
+  port: 8080
