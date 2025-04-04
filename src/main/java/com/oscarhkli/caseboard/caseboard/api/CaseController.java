@@ -1,16 +1,20 @@
 package com.oscarhkli.caseboard.caseboard.api;
 
 import com.oscarhkli.caseboard.caseboard.CaseService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
+@Validated
 @AllArgsConstructor
 @RequestMapping("/api")
 public class CaseController {
@@ -42,7 +46,7 @@ public class CaseController {
 
     @PostMapping("/v1/cases")
     public ResponseEntity<Long> insertCase(@RequestHeader HttpHeaders headers,
-        @RequestBody Case newCase) {
+        @RequestBody @NotNull @Valid Case newCase) {
         log.info("insertCase request caseNumber: {} [referer: {}, user-agent: {}]",
             newCase.getCaseNumber(), headers.getOrEmpty(HttpHeaders.REFERER),
             headers.getOrEmpty(HttpHeaders.USER_AGENT));
@@ -53,7 +57,7 @@ public class CaseController {
 
     @PutMapping(value = "/v1/cases/{id}")
     public ResponseEntity<Boolean> updateCase(@RequestHeader HttpHeaders headers,
-        @PathVariable Long id, @RequestBody Case updatedCase) {
+        @PathVariable Long id, @RequestBody @NotNull @Valid Case updatedCase) {
         log.info("updateCase request id: {} [referer: {}, user-agent: {}]", id,
             headers.getOrEmpty(HttpHeaders.REFERER), headers.getOrEmpty(HttpHeaders.USER_AGENT));
         caseService.updateCase(id, updatedCase);

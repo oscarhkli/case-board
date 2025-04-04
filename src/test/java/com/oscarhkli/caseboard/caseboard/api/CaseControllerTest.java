@@ -1,7 +1,9 @@
 package com.oscarhkli.caseboard.caseboard.api;
 
+import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oscarhkli.caseboard.caseboard.CaseOperationException;
 import com.oscarhkli.caseboard.caseboard.CaseService;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -126,6 +130,23 @@ class CaseControllerTest {
 
             then(response).isEmpty();
         }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given non-long id, \
+            When getCase, \
+            Then can return 400 with CaseGetResponse""")
+        void shouldHandleBadRequestForId() {
+            var response = mockMvc.perform(
+                    get("/api/v1/cases/{id}", "ABC").contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest())
+                .andDo(print()).andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).contains("id", "ABC");
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
+        }
     }
 
     @Nested
@@ -135,7 +156,7 @@ class CaseControllerTest {
         @SneakyThrows
         @Test
         @DisplayName("""
-            Given caseService can return some cases, \
+            Given caseService can insert case, \
             When insertCase, \
             Then can return 201 with new case id""")
         void insertCase() {
@@ -154,7 +175,67 @@ class CaseControllerTest {
             then(actual).isEqualTo(100L);
         }
 
-        // TODO: insert error
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given caseService throws CaseOperationException when inserting case, \
+            When insertCase, \
+            Then can return 500""")
+        void shouldHandleCaseOperationExceptionForInsert() {
+            var newCase = Case.builder().caseNumber("CASE_001").title("Title 001")
+                .description("Description 001").status("STATUS_001").build();
+            var requestJson = objectMapper.writeValueAsString(newCase);
+
+            given(caseService.insertCase(newCase)).willThrow(
+                new CaseOperationException("SOME_MSG"));
+
+            var response = mockMvc.perform(
+                    post("/api/v1/cases").contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(requestJson)).andExpect(status().is5xxServerError()).andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).contains("SOME_MSG");
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given case with some missing elements, \
+            When insertCase, \
+            Then can return 400""")
+        void shouldHandleBadRequestForInsert() {
+            var newCase = Case.builder().build();
+            var requestJson = objectMapper.writeValueAsString(newCase);
+
+            var response = mockMvc.perform(
+                    post("/api/v1/cases").contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(requestJson)).andExpect(status().isBadRequest()).andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().errors()).extracting("reason", "message")
+                .containsExactlyInAnyOrder(tuple("caseNumber", "must not be empty"),
+                    tuple("title", "must not be empty"), tuple("status", "must not be empty"));
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given newCase is not provided, \
+            When insertCase, \
+            Then can return 400""")
+        void shouldHandleBadRequestForUpdateWithoutNewCase() {
+            var response = mockMvc.perform(
+                    post("/api/v1/cases").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest()).andDo(print()).andReturn().getResponse()
+                .getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).isEqualTo("Required request body is missing");
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
+        }
     }
 
     @Nested
@@ -182,7 +263,84 @@ class CaseControllerTest {
             then(actual).isTrue();
         }
 
-        // TODO: update error
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given caseService throws CaseOperationException when updating case, \
+            When updateCase, \
+            Then can return 500""")
+        void shouldHandleCaseOperationExceptionForUpdate() {
+            var updatedCase = Case.builder().caseNumber("CASE_001").title("Title 001")
+                .description("Description 001").status("STATUS_001").build();
+            var requestJson = objectMapper.writeValueAsString(updatedCase);
+
+            willThrow(new CaseOperationException("SOME_MSG")).given(caseService)
+                .updateCase(1L, updatedCase);
+
+            var response = mockMvc.perform(
+                    put("/api/v1/cases/{id}", 1L).contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(requestJson)).andExpect(status().is5xxServerError()).andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).contains("SOME_MSG");
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given case with some missing elements, \
+            When updateCase, \
+            Then can return 400""")
+        void shouldHandleBadRequestForUpdate() {
+            var updatedCase = Case.builder().build();
+            var requestJson = objectMapper.writeValueAsString(updatedCase);
+
+            var response = mockMvc.perform(
+                    put("/api/v1/cases/{id}", 1L).contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(requestJson)).andExpect(status().isBadRequest()).andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().errors()).extracting("reason", "message")
+                .containsExactlyInAnyOrder(tuple("caseNumber", "must not be empty"),
+                    tuple("title", "must not be empty"), tuple("status", "must not be empty"));
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given updatedCase is not provided, \
+            When updateCase, \
+            Then can return 400""")
+        void shouldHandleBadRequestForUpdateWithoutUpdatedCase() {
+            var response = mockMvc.perform(
+                    put("/api/v1/cases/{id}", 1L).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest()).andDo(print()).andReturn().getResponse()
+                .getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).isEqualTo("Required request body is missing");
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given non-long id, \
+            When updateCase, \
+            Then can return 400""")
+        void shouldHandleBadRequestForId() {
+            var response = mockMvc.perform(
+                    put("/api/v1/cases/{id}", "ABC").contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest())
+                .andDo(print()).andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).contains("id", "ABC");
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
+        }
     }
 
     @Nested
@@ -203,6 +361,22 @@ class CaseControllerTest {
                 .getContentAsString();
 
             then(response).isEmpty();
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("""
+            Given non-long id, \
+            When deletCase, \
+            Then can return 400""")
+        void shouldHandleBadRequestForId() {
+            var response = mockMvc.perform(
+                    delete("/api/v1/cases/{id}", "ABC")).andExpect(status().isBadRequest())
+                .andDo(print()).andReturn().getResponse().getContentAsString();
+
+            var apiErrorResponse = objectMapper.readValue(response, ApiErrorResponse.class);
+            then(apiErrorResponse.error().message()).contains("id", "ABC");
+            BDDMockito.then(caseService).shouldHaveNoInteractions();
         }
     }
 }
