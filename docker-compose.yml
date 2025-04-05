@@ -1,7 +1,7 @@
 services:
   mysql:
-    container_name: 'case-board-mysql'
-    image: 'mysql:latest'
+    container_name: case-board-mysql
+    image: mysql:latest
     restart: always
     environment:
       MYSQL_DATABASE: ${DB_NAME}
@@ -11,14 +11,16 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - mysql-data:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql # Map the MySQL data to a folder on the host machine
       - ./mysql-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       retries: 5
+    networks:
+      - case-board-network
 
-  app:
+  backend:
     container_name: case-board
     image: oscarhkli/case-board
     platform: linux/amd64
@@ -28,6 +30,21 @@ services:
       - SPRING_PROFILES_ACTIVE=cloud
     env_file:
       - .env # Load variables from .env file
+    networks:
+      - case-board-network
+
+  frontend:
+    container_name: react-case-board
+    image: oscarhkli/react-case-board
+    platform: linux/amd64
+    ports:
+      - "8080:80"
+    networks:
+      - case-board-network
 
 volumes:
   mysql-data:
+
+networks:
+  case-board-network:
+    driver: bridge

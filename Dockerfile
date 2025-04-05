@@ -5,7 +5,7 @@ RUN addgroup -S caseboarduser && adduser -S caseboarduser -G caseboarduser
 USER caseboarduser:caseboarduser
 
 # ARG variables (build-time arguments)
-ARG SPRING_PROFILES_ACTIVE=prod
+ARG SPRING_PROFILES_ACTIVE=cloud
 ARG DEPENDENCY=target/dependency
 COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY ${DEPENDENCY}/META-INF /app/META-INF

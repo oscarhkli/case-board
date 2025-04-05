@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @AllArgsConstructor
 @RequestMapping("/api")
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "https://localhost:8080",
+})
 public class CaseController {
 
     private final CaseService caseService;
