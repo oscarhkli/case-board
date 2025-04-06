@@ -36,8 +36,8 @@ A simple full-stack CRUD app.
     ```
 
 4. Access the app:
-- API docs: http://localhost:61001/swagger-ui.html
-- Frontend: http://localhost:8080
+   - API docs: [http://localhost:61001/swagger-ui.html](http://localhost:61001/swagger-ui.html)
+   - Frontend: [http://localhost:8080](http://localhost:8080)
 
 ---
 Enjoy!
