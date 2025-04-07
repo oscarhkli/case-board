@@ -2,6 +2,8 @@
 
 A simple full-stack CRUD app.
 
+![screenshot](https://github.com/user-attachments/assets/6861c002-d34d-46f8-99e5-09cb37b59a28)
+
 ## Purpose
 
 - Show how Java + Spring Boot work with a React frontend.
